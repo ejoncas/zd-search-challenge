@@ -1,0 +1,34 @@
+# ZenDesk Coding Challenge
+
+## Requirements
+
+
+* [Java 12](https://www.oracle.com/technetwork/java/javase/downloads/jdk12-downloads-5295953.html). If you are on Mac and you use `brew`, you can install it as follows:
+```
+brew cask install java
+* This project uses [maven wrapper](https://github.com/takari/maven-wrapper) as the build tool. So everything else you need will be provided by  `./mvnw` command or `./mvnw.cmd` if on Windows.
+
+## Compile
+
+```
+./mvnw package
+```
+
+## Run
+
+```
+java -jar target/zendesk-search-cli-0.0.1-SNAPSHOT.jar
+```
+
+
+## Design Decisions
+
+1) In some cases I could have use higher level types such as `OffsetDateTime`, `TimeZone` and `Locale`. Given the simple functionality of this search tool (just string comparison) I decided to load them as a string. In real world, using higher level types may be a better option so we can access all the useful methods on those types.
+2) I decided to use reflection in order to get all the fields and values in a generic way. This adds complexity but it favours code reusability where the same `SearchService` can be used for searching any new type of entity.
+3) The value separator is a space so the search tool will only match full words. This means that a search term like `"flotonic"` will not match `"michaelburt@flotonic.com"`. This is said in the instructions but for the email use case I find it a bit rigid. Perhaps a further optimization would be to tokenize strings based on a set of different separators such as space but also `-`, `@`, `.` and `-`.
+
+
+
+
+
+
