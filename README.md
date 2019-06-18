@@ -1,5 +1,7 @@
 # ZenDesk Coding Challenge
 
+[![Build Status](https://travis-ci.com/nanducoder/zd-search-challenge.svg?branch=master)](https://travis-ci.com/nanducoder/zd-search-challenge)
+
 ## Requirements
 
 
