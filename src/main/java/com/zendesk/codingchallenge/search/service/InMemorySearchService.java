@@ -6,11 +6,10 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
-import com.google.gson.annotations.SerializedName;
 import com.zendesk.codingchallenge.search.model.BaseEntity;
+import com.zendesk.codingchallenge.search.utils.SearchReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -52,17 +51,13 @@ public class InMemorySearchService<T extends BaseEntity> implements SearchServic
     public void index() {
         Stopwatch stopwatch = Stopwatch.createStarted();
         for (T entity : entities) {
-            ReflectionUtils.doWithFields(entity.getClass(), f -> {
-                SerializedName serializedName = f.getAnnotation(SerializedName.class);
-                String indexFieldName = serializedName == null ? f.getName() : serializedName.value();
-                ReflectionUtils.makeAccessible(f);
-                String fieldValue = String.valueOf(f.get(entity));
-                String[] words = Strings.nullToEmpty(fieldValue).split(WORD_SEPARATOR);
+            SearchReflectionUtils.doWithSerializedNames(entity, (name, value) -> {
+                String[] words = Strings.nullToEmpty(value).split(WORD_SEPARATOR);
                 for (String word : words) {
-                    List<T> matchedEntities = indexByFieldAndWords.get(indexFieldName, word);
+                    List<T> matchedEntities = indexByFieldAndWords.get(name, word);
                     if (matchedEntities == null) {
                         matchedEntities = Lists.newArrayList();
-                        indexByFieldAndWords.put(indexFieldName, word, matchedEntities);
+                        indexByFieldAndWords.put(name, word, matchedEntities);
                     }
                     matchedEntities.add(entity);
                 }

@@ -1,6 +1,6 @@
 package com.zendesk.codingchallenge.search.commands;
 
-import com.google.gson.GsonBuilder;
+import com.zendesk.codingchallenge.search.commands.output.BeanReflectorTableOutput;
 import com.zendesk.codingchallenge.search.model.BaseEntity;
 import com.zendesk.codingchallenge.search.model.EntityType;
 import com.zendesk.codingchallenge.search.service.SearchService;
@@ -12,6 +12,7 @@ import org.springframework.shell.standard.ShellOption;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ShellComponent
 public class SearchCommand extends BaseSearchCommand {
@@ -37,8 +38,10 @@ public class SearchCommand extends BaseSearchCommand {
     }
 
     private String renderResults(List<? extends BaseEntity> search) {
-        //TODO have a nicer render
-        return new GsonBuilder().setPrettyPrinting().create().toJson(search);
+        return search.stream()
+                .map(BeanReflectorTableOutput::new)
+                .map(BeanReflectorTableOutput::render)
+                .collect(Collectors.joining("-----------------------------\n"));
     }
 
 }

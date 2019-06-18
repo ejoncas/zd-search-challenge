@@ -23,7 +23,7 @@ public class SearchConfig {
 
     @Bean
     public EntityRepository<User> userRepository() {
-        return new JsonArrayEntityRepository<>(User.class, new ClassPathResource("file_datastore/users.json"), gson());
+        return new JsonArrayEntityRepository<>(User.class, new ClassPathResource("file_datastore/users-long.json"), gson());
     }
 
     @Bean

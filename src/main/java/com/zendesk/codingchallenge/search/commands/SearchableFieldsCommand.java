@@ -13,7 +13,6 @@ import java.util.Set;
 @ShellComponent
 public class SearchableFieldsCommand extends BaseSearchCommand {
 
-
     public SearchableFieldsCommand(Map<EntityType, SearchService<? extends BaseEntity>> searchServiceMap) {
         super(searchServiceMap);
     }
@@ -29,7 +28,6 @@ public class SearchableFieldsCommand extends BaseSearchCommand {
             }
             builder.append("\n");
         }
-
         return builder.toString();
     }
 
