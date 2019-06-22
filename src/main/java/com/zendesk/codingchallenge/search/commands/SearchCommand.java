@@ -1,26 +1,28 @@
 package com.zendesk.codingchallenge.search.commands;
 
-import com.zendesk.codingchallenge.search.commands.output.BeanReflectorTableOutput;
+import com.zendesk.codingchallenge.search.commands.output.ModelRenderer;
+import com.zendesk.codingchallenge.search.exception.SearchCommandFailedException;
 import com.zendesk.codingchallenge.search.model.BaseEntity;
 import com.zendesk.codingchallenge.search.model.EntityType;
 import com.zendesk.codingchallenge.search.service.SearchService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @ShellComponent
 public class SearchCommand extends BaseSearchCommand {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SearchCommand.class);
+    private final ModelRenderer modelRenderer;
 
-    public SearchCommand(Map<EntityType, SearchService<? extends BaseEntity>> searchServiceMap) {
+    @Autowired
+    public SearchCommand(Map<EntityType, SearchService<? extends BaseEntity>> searchServiceMap,
+                         ModelRenderer modelRenderer) {
         super(searchServiceMap);
+        this.modelRenderer = modelRenderer;
     }
 
     @ShellMethod("Search for Tickets, Users or Organizations")
@@ -31,17 +33,22 @@ public class SearchCommand extends BaseSearchCommand {
         EntityType entityType = EntityType.fromName(type);
         SearchService<?> searchService = getSearchService(entityType);
         if (!searchService.getIndexedFields().contains(field)) {
-            throw new IllegalArgumentException("Field '" + field + "' is invalid for entity type '" + type + "'");
+            throw new SearchCommandFailedException("Field '" + field + "' is invalid for entity type '" + type + "'");
         }
         List<? extends BaseEntity> search = searchService.search(field, value);
         return renderResults(search);
     }
 
-    private String renderResults(List<? extends BaseEntity> search) {
-        return search.stream()
-                .map(BeanReflectorTableOutput::new)
-                .map(BeanReflectorTableOutput::render)
-                .collect(Collectors.joining("-----------------------------\n"));
+    private <T> String renderResults(List<T> search) {
+        StringBuilder builder = new StringBuilder();
+        int resultNumber = 0;
+        for (T searchResult : search) {
+            builder.append("### Result Number " + (++resultNumber) + NEW_LINE);
+            builder.append(modelRenderer.render(searchResult));
+            builder.append(NEW_LINE);
+            builder.append(NEW_LINE);
+        }
+        return builder.toString();
     }
 
 }

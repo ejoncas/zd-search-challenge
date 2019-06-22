@@ -1,6 +1,5 @@
 package com.zendesk.codingchallenge.search.model;
 
-import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
@@ -72,8 +71,7 @@ public class BaseEntity<ID> {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .toString();
+        return this.getClass().getSimpleName() + ":" + id;
     }
+
 }

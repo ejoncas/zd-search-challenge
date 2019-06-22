@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.zendesk.codingchallenge.search.config.SearchConfig;
 import com.zendesk.codingchallenge.search.model.User;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.math.RandomUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,18 +15,35 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-import static org.apache.commons.lang.math.RandomUtils.*;
+import static org.apache.commons.lang.math.RandomUtils.nextBoolean;
+import static org.apache.commons.lang.math.RandomUtils.nextInt;
 
 public class TestUtils {
 
+    public static final int NUMBER_OF_USERS_IN_FILE = 400_000;
+
+    /**
+     * This file has been used to create really big files for testing.
+     * I'm not including any file in the  repo as they  were huge.
+     * <p>
+     * This test is ignored to not generate huge files when you run the build.
+     * <p>
+     * If needed, it can be un-ignored and it will generate a JSON in your temp folder
+     *
+     * @throws IOException
+     */
     @Test
+    @Ignore
     public void generateBiggerFilesForTesting() throws IOException {
         SearchConfig searchConfig = new SearchConfig();
         Gson gson = searchConfig.gson();
-        User sample = searchConfig.userRepository().findAll().get(0);
+        //Get a sample
+        User sample = searchConfig.userRepository().findAll().stream().findAny()
+                .orElseThrow(() -> new IllegalStateException("No entities found"));
         List<User> newOnes = Lists.newArrayList();
 
-        for (int i = 0; i < 400_000; i++) {
+        for (int i = 0; i < NUMBER_OF_USERS_IN_FILE; i++) {
+            //Add some randomness to make sure we get lots of new words to be indexed.
             User deepCopy = gson.fromJson(gson.toJson(sample), User.class);
             deepCopy.setName(RandomStringUtils.randomAlphanumeric(10));
             deepCopy.setTags(ImmutableSortedSet.of(
@@ -43,10 +60,9 @@ public class TestUtils {
             newOnes.add(deepCopy);
         }
         File tempFile = File.createTempFile("user", ".json");
-        FileWriter writer = new FileWriter(tempFile);
-        gson.toJson(newOnes, writer);
-        writer.flush();
-        writer.close();
+        try (FileWriter writer = new FileWriter(tempFile)) {
+            gson.toJson(newOnes, writer);
+        }
         System.out.println("Written to " + tempFile);
     }
 }

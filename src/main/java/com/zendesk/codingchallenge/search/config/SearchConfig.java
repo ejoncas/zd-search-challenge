@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Configuration
 public class SearchConfig {
@@ -22,34 +23,34 @@ public class SearchConfig {
     }
 
     @Bean
-    public EntityRepository<User> userRepository() {
-        return new JsonArrayEntityRepository<>(User.class, new ClassPathResource("file_datastore/users-long.json"), gson());
+    public EntityRepository<Integer, User> userRepository() {
+        return new JsonArrayEntityRepository<>(User.class, new ClassPathResource("file_datastore/users.json"), gson());
     }
 
     @Bean
-    public EntityRepository<Ticket> ticketRepository() {
+    public EntityRepository<UUID, Ticket> ticketRepository() {
         return new JsonArrayEntityRepository<>(Ticket.class, new ClassPathResource("file_datastore/tickets.json"), gson());
     }
 
     @Bean
-    public EntityRepository<Organisation> organisationRepository() {
+    public EntityRepository<Integer, Organisation> organisationRepository() {
         return new JsonArrayEntityRepository<>(Organisation.class, new ClassPathResource("file_datastore/organisations.json"), gson());
     }
 
     @Bean
     public SearchService<User> userSearchService() {
-        return new InMemorySearchService<>(userRepository().findAll());
+        return new InMemorySearchService<>(userRepository());
     }
 
 
     @Bean
     public SearchService<Ticket> ticketSearchService() {
-        return new InMemorySearchService<>(ticketRepository().findAll());
+        return new InMemorySearchService<>(ticketRepository());
     }
 
     @Bean
     public SearchService<Organisation> organisationSearchService() {
-        return new InMemorySearchService<>(organisationRepository().findAll());
+        return new InMemorySearchService<>(organisationRepository());
     }
 
     @Bean

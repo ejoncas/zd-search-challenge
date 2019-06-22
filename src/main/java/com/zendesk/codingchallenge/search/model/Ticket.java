@@ -27,11 +27,11 @@ public class Ticket extends BaseEntity<UUID> {
     private String description;
     private Priority priority;
     private Status status;
-    //TODO Reference User
+    @SerializedName("submitter_id")
     private int submitterId;
-    //TODO Reference User
+    @SerializedName("assignee_id")
     private int assigneeId;
-    //TODO reference organization
+    @SerializedName("organization_id")
     private int organizationId;
     @SerializedName("has_incidents")
     private boolean hasIncidents;

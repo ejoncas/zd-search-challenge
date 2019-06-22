@@ -2,6 +2,9 @@ package com.zendesk.codingchallenge.search.model;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * POJO that represents a User
+ */
 public class User extends BaseEntity<Integer> {
 
     private String name;

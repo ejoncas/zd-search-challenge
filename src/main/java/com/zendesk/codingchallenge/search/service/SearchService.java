@@ -10,7 +10,7 @@ import java.util.Set;
  *
  * @param <T> the type backed by this search service
  */
-public interface SearchService<T extends BaseEntity> {
+public interface SearchService<T extends BaseEntity<?>> {
 
     /**
      * Runs the index generation. This is a prerequesite for this search service to start returning results

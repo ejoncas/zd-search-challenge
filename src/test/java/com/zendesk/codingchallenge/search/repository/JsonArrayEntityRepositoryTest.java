@@ -12,6 +12,7 @@ import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import com.zendesk.codingchallenge.search.config.SearchConfig;
+import com.zendesk.codingchallenge.search.model.BaseEntity;
 import com.zendesk.codingchallenge.search.model.Organisation;
 import com.zendesk.codingchallenge.search.model.Ticket;
 import com.zendesk.codingchallenge.search.model.User;
@@ -32,13 +33,14 @@ public class JsonArrayEntityRepositoryTest {
                 //input file, expected type, expected entities to load
                 {config.organisationRepository(), Organisation.class, 25},
                 {config.ticketRepository(), Ticket.class, 200},
-                {config.userRepository(), User.class, 75},
+                {config.userRepository(), User.class, 76},
         };
     }
 
     @Test
     @UseDataProvider("loadEntitiesScenarios")
-    public <T> void testLoadingEntities(JsonArrayEntityRepository<T> repository, Class<T> clazz, int expectedEntities) {
+    public <ID, T extends BaseEntity<ID>> void testLoadingEntities(JsonArrayEntityRepository<ID, T> repository,
+                                                                   Class<T> clazz, int expectedEntities) {
         assertThat(repository.findAll(), hasSize(expectedEntities));
         for (T entity : repository.findAll()) {
             assertThat(entity, isA(clazz));

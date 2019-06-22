@@ -1,5 +1,7 @@
 package com.zendesk.codingchallenge.search.model;
 
+import com.zendesk.codingchallenge.search.exception.SearchCommandFailedException;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
@@ -27,7 +29,7 @@ public enum EntityType {
     public static final EntityType fromName(String name) {
         EntityType entityType = LOOKUP.get(name);
         if (entityType == null) {
-            throw new IllegalArgumentException("Name " + name + " is not a valid entity type. Accepted values are: " + LOOKUP.keySet());
+            throw new SearchCommandFailedException("Name " + name + " is not a valid entity type. Accepted values are: " + LOOKUP.keySet());
         }
         return entityType;
     }
