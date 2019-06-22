@@ -32,7 +32,7 @@ java -jar target/zendesk-search-cli-0.0.1-SNAPSHOT.jar
 To see the list of all the searchable fields
 
 ```
-showfields
+shell:> showfields
 ```
 
 ## Searching an entity
@@ -40,9 +40,9 @@ showfields
 ### Searching for an specific value
 
 ```
-search user _id 71
-search organisation tags Erickson
-search ticket subject Virgin
+shell:> search user _id 71
+shell:> search organisation tags Erickson
+shell:> search ticket subject Virgin
 ```
 
 ### Searching for empty value
@@ -50,7 +50,7 @@ search ticket subject Virgin
 The keyword to match null values is `<null>`
 
 ```
-search ticket type <null>
+shell:> search ticket type <null>
 ```
 
 
@@ -59,13 +59,13 @@ search ticket type <null>
 Type the following in the shell
 
 ```
-help
+shell:> help
 ```
 
 Or help about an specific command:
 
 ```
-help <command>
+shell:> help <command>
 ```
 
 For example:
@@ -103,7 +103,7 @@ SYNOPSYS
 ## Design Decisions
 
 1) In some cases I could have use higher level types such as `OffsetDateTime`, `TimeZone` and `Locale`. Given the simple functionality of this search tool (just string comparison) I decided to load them as a string. In real world, using higher level types may be a better option so we can access all the useful methods on those types.
-2) I decided to use reflection in order to get all the fields and values in a generic way. This adds complexity but it favours code reusability where the same `SearchService` can be used for searching any new type of entity.
+2) I decided to use reflection in order to get all the fields and values in a generic way. This has a performance impact but it favours code reusability where the same `SearchService` can be used for searching any new type of entity. I also used the `Introspector` class that has a internal cache of already reflected types.
 3) The value separator is a space so the search tool will only match full words. This means that a search term like `"flotonic"` will not match `"michaelburt@flotonic.com"`. This is said in the instructions but for the email use case I find it a bit rigid. Perhaps a further optimization would be to tokenize strings based on a set of different separators such as space but also `-`, `@`, `.` and `-`.
 4) For the search implementation, I decided to use an [Inverted Index](https://en.wikipedia.org/wiki/Inverted_index). This is a searching mechanism that will resolve search using full word match in a constant time at the cost of processing time when indexing the documents.
 
@@ -111,13 +111,13 @@ SYNOPSYS
 ## Performance test:
 
 
-I Created a file with 400K Users, it loaded in 8.6 seconds. Trying to load files bigger than that may result in Out of Memory.
+I Created a file with 400K Users, it loaded in 8.6 seconds. Trying to load files bigger than that may result in Out of Memory depending on how much memory the host has.
 
 This is fine, the instructions says we can assume the results fits in memory.
 
 For a better and scalable search application we should be looking at ElasticSearch which will do the job way better than what I did here.
 
 ```
-2019-06-19 00:38:23.084  INFO 50219 --- [           main] c.z.c.s.r.JsonArrayEntityRepository      : Loaded 400000 entities to User repository
-2019-06-19 00:38:31.768  INFO 50219 --- [           main] c.z.c.s.service.InMemorySearchService    : Indexing 400000 entities took 8682ms
+Loaded 400000 entities to User repository
+Indexing 400000 entities took 8682ms
 ```
