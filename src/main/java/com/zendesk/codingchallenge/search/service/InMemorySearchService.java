@@ -22,10 +22,10 @@ import static java.util.stream.Collectors.joining;
 /**
  * An in-memory search service.
  * <p>
- * TODO: Fix documentation
- * This class holds a reverse index where every word gets mapped to the entity.
+ * This class holds a reverse index where every word gets mapped to the entity. For more info about this
+ * have a look at the readme
  *
- * @param <T>
+ * @param <T> the searcheable type
  */
 public class InMemorySearchService<ID, T extends BaseEntity<ID>> implements SearchService<T> {
 
