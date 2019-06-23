@@ -4,8 +4,6 @@ import com.zendesk.codingchallenge.search.TestUtils;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-import java.util.UUID;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 

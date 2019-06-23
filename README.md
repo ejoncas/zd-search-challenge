@@ -100,12 +100,13 @@ SYNOPSYS
 ```
 
 
-## Design Decisions
+## Design Decisions/Tradeoffs
 
 1) In some cases I could have use higher level types such as `OffsetDateTime`, `TimeZone` and `Locale`. Given the simple functionality of this search tool (just string comparison) I decided to load them as a string. In real world, using higher level types may be a better option so we can access all the useful methods on those types.
 2) I decided to use reflection in order to get all the fields and values in a generic way. This has a performance impact but it favours code reusability where the same `SearchService` can be used for searching any new type of entity. I also used the `Introspector` class that has a internal cache of already reflected types.
 3) The value separator is a space so the search tool will only match full words. This means that a search term like `"flotonic"` will not match `"michaelburt@flotonic.com"`. This is said in the instructions but for the email use case I find it a bit rigid. Perhaps a further optimization would be to tokenize strings based on a set of different separators such as space but also `-`, `@`, `.` and `-`.
 4) For the search implementation, I decided to use an [Inverted Index](https://en.wikipedia.org/wiki/Inverted_index). This is a searching mechanism that will resolve search using full word match in a constant time at the cost of processing time when indexing the documents.
+5) This search supports only single word search. Given the use of an inverted index, searching for multiple words would require getting the results of every word and then perform the intersection or union of those partial results based on what the user specifies. In ElasticSearch language this would be written as `tags: Gambrills AND Lund` or `tags: Gambrills OR Lund`. I decided to left this out of the scope as it would get more complicated. If this is needed, I would probably consider moving this tool to a Lucene or ElasticSearch server.
 
 
 ## Performance test:

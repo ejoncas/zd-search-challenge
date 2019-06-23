@@ -41,7 +41,7 @@ public class TestUtils {
      * <p>
      * If needed, it can be un-ignored and it will generate a JSON in your temp folder
      *
-     * @throws IOException
+     * @throws IOException if something goes wrong while writing the file
      */
     @Test
     @Ignore

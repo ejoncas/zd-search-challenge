@@ -25,8 +25,8 @@ public abstract class BasePojoTest<T> {
     /**
      * It receives the POJO class and also a classpath resource with a sample serialized version of the POJO.
      *
-     * @param pojoClass
-     * @param sampleFileResource
+     * @param pojoClass the class to test
+     * @param sampleFileResource the expected serialised pojo
      */
     protected BasePojoTest(Class<T> pojoClass, ClassPathResource sampleFileResource) {
         this.pojoClass = pojoClass;

@@ -9,9 +9,7 @@ public class PojoReflectorTableOutput extends TableOutput {
 
     public PojoReflectorTableOutput(Object obj) {
         super(obj.getClass().getSimpleName());
-        PojoJsonIntrospectorUtils.doWithSerializedNames(obj, (k, v) -> {
-            this.addRow(k, String.valueOf(v));
-        });
+        PojoJsonIntrospectorUtils.doWithSerializedNames(obj, (k, v) -> this.addRow(k, String.valueOf(v)));
     }
 
 }

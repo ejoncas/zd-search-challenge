@@ -26,7 +26,7 @@ public enum EntityType {
         return name;
     }
 
-    public static final EntityType fromName(String name) {
+    public static EntityType fromName(String name) {
         EntityType entityType = LOOKUP.get(name);
         if (entityType == null) {
             throw new SearchCommandFailedException("Name " + name + " is not a valid entity type. Accepted values are: " + LOOKUP.keySet());

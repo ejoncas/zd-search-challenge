@@ -40,13 +40,18 @@ public class SearchCommand extends BaseSearchCommand {
     }
 
     private <T> String renderResults(List<T> search) {
+        if (search.isEmpty()) {
+            return "No results found!";
+        }
         StringBuilder builder = new StringBuilder();
         int resultNumber = 0;
         for (T searchResult : search) {
-            builder.append("### Result Number " + (++resultNumber) + NEW_LINE);
-            builder.append(modelRenderer.render(searchResult));
-            builder.append(NEW_LINE);
-            builder.append(NEW_LINE);
+            builder.append("### Result Number ")
+                    .append(++resultNumber)
+                    .append(NEW_LINE)
+                    .append(modelRenderer.render(searchResult))
+                    .append(NEW_LINE)
+                    .append(NEW_LINE);
         }
         return builder.toString();
     }

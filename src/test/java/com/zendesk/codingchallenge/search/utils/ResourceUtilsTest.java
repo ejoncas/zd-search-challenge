@@ -12,7 +12,7 @@ public class ResourceUtilsTest {
 
     @Test
     public void testSimpleResourceToString() throws IOException {
-        assertThat(ResourceUtils.resourceToString(new ClassPathResource("test_file.json")), is("this is just for testing"));
+        assertThat(ResourceUtils.resourceToString(new ClassPathResource("test_file.txt")), is("this is just for testing"));
     }
 
 }

@@ -12,16 +12,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
+/**
+ * This is a really basic integration test to make sure everything is wired correctly.
+ * <p>
+ * Lots of search scenarios have been tested in {@link com.zendesk.codingchallenge.search.service.InMemorySearchServiceTest}
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false",
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false"
 })
-/**
- * This is a really basic integration test to make sure everything is wired correctly.
- *
- * Lots of search scenarios have been tested in {@link com.zendesk.codingchallenge.search.service.InMemorySearchServiceTest}
- */
 public class ZendeskSearchCliApplicationTest {
 
     @Autowired
@@ -46,6 +46,11 @@ public class ZendeskSearchCliApplicationTest {
         assertThat(result.toString(), containsString("A Drama in Australia"));
     }
 
+    @Test
+    public void searchEmptyResults() {
+        Object result = shell.evaluate(() -> "search user _id 9999999nonexistent");
+        assertThat(result.toString(), containsString("No results found!"));
+    }
 
     @Test
     public void searchTicketByOrganisationId() {
