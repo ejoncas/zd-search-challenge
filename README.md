@@ -5,13 +5,13 @@
 ## Requirements
 
 
-* [Java 12](https://www.oracle.com/technetwork/java/javase/downloads/jdk12-downloads-5295953.html). If you are on Mac and you use `brew`, you can install it as follows:
+* [Java 12](https://www.oracle.com/technetwork/java/javase/downloads/jdk12-downloads-5295953.html). If you are on Mac, `brew` can be used for installing it.
 
 ```
 brew cask install java
 ```
 
-* This project uses [maven wrapper](https://github.com/takari/maven-wrapper) as the build tool. So everything else you need will be provided by  `./mvnw` command or `./mvnw.cmd` if on Windows.
+* This project uses [maven wrapper](https://github.com/takari/maven-wrapper) as the build tool. So everything else required in terms of libraries will be provided by  `./mvnw` command or `./mvnw.cmd` if on Windows.
 
 ## Compile
 
@@ -29,7 +29,7 @@ java -jar target/zendesk-search-cli-0.0.1-SNAPSHOT.jar
 
 ## Showing Searchable Fields
 
-To see the list of all the searchable fields
+To see the list of all searchable fields
 
 ```
 shell:> showfields
@@ -119,7 +119,7 @@ SYNOPSYS
 ## Performance test:
 
 
-I Created a file with 400K Users, it loaded in 8.6 seconds on a Macbook Pro i5 with 8GB RAM. Trying to load files bigger than that may result in Out of Memory depending on how much memory the host has.
+A file was created with 400K Users, it loaded in 8.6 seconds on a Macbook Pro i5 with 8GB RAM. Trying to load files bigger than that may result in Out of Memory depending on how much memory the host has.
 
 This test exceeds the requirement in the instructions of 10K+ users.
 
