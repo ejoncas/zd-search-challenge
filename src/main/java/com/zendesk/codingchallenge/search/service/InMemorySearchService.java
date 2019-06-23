@@ -5,7 +5,7 @@ import com.google.common.collect.*;
 import com.zendesk.codingchallenge.search.exception.SearchCommandFailedException;
 import com.zendesk.codingchallenge.search.model.BaseEntity;
 import com.zendesk.codingchallenge.search.repository.EntityRepository;
-import com.zendesk.codingchallenge.search.utils.PojoJsonIntrospector;
+import com.zendesk.codingchallenge.search.utils.PojoJsonIntrospectorUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,7 @@ public class InMemorySearchService<ID, T extends BaseEntity<ID>> implements Sear
         Stopwatch stopwatch = Stopwatch.createStarted();
         Collection<T> entities = repository.findAll();
         for (T entity : entities) {
-            PojoJsonIntrospector.doWithSerializedNames(entity, (name, value) -> {
+            PojoJsonIntrospectorUtils.doWithSerializedNames(entity, (name, value) -> {
                 String[] words = valueToString(value).split(WORD_SEPARATOR);
                 for (String word : words) {
                     String sanitizedWord = sanitizeValue(word);

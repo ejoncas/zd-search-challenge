@@ -7,13 +7,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.Is.isA;
 import static org.junit.Assert.assertThat;
 
-public class PojoJsonIntrospectorTest {
+public class PojoJsonIntrospectorUtilsTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -28,7 +30,7 @@ public class PojoJsonIntrospectorTest {
 
         //When
         Map<String, Object> fieldsValues = Maps.newLinkedHashMap();
-        PojoJsonIntrospector.doWithSerializedNames(testObject, fieldsValues::put);
+        PojoJsonIntrospectorUtils.doWithSerializedNames(testObject, fieldsValues::put);
 
         //Then
         //it should have only 2 entries as 'noGetterField' has no getter. Hence it is not visible
@@ -44,7 +46,20 @@ public class PojoJsonIntrospectorTest {
 
         //When
         expectedException.expect(SearchCommandFailedException.class);
-        PojoJsonIntrospector.doWithSerializedNames(invalidPojo, (k, v) -> {
+        PojoJsonIntrospectorUtils.doWithSerializedNames(invalidPojo, (k, v) -> {
+        });
+    }
+
+    @Test
+    public void testSearchShouldThrowExceptionWhenInvocationException() {
+        //Given
+        AClassWithInvocationExxception invalidPojo = new AClassWithInvocationExxception();
+
+        //When
+        expectedException.expect(SearchCommandFailedException.class);
+        expectedException.expectCause(isA(InvocationTargetException.class));
+        expectedException.expectMessage("Failed to introspect pojo");
+        PojoJsonIntrospectorUtils.doWithSerializedNames(invalidPojo, (k, v) -> {
         });
     }
 
@@ -69,6 +84,14 @@ public class PojoJsonIntrospectorTest {
 
         public void setRegularPrivateFieldWithAnnotation(String regularPrivateFieldWithAnnotation) {
             this.regularPrivateFieldWithAnnotation = regularPrivateFieldWithAnnotation;
+        }
+    }
+
+    public static final class AClassWithInvocationExxception {
+        private String aPrivateField;
+
+        public String getaPrivateField() {
+            throw new RuntimeException("Boom!");
         }
     }
 

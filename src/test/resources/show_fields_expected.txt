@@ -1,0 +1,10 @@
+Search ORGANISATION with:
+field1
+field2
+field3
+
+Search TICKET with:
+field1
+field2
+field3
+

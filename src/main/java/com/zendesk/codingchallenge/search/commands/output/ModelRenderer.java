@@ -1,5 +1,6 @@
 package com.zendesk.codingchallenge.search.commands.output;
 
+import com.zendesk.codingchallenge.search.model.BaseEntity;
 import com.zendesk.codingchallenge.search.model.Organisation;
 import com.zendesk.codingchallenge.search.model.Ticket;
 import com.zendesk.codingchallenge.search.model.User;
@@ -7,8 +8,10 @@ import com.zendesk.codingchallenge.search.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.function.Function;
+
 @Component
-//TODO Fix repeated code about table breaks
 public class ModelRenderer {
 
     private final SearchService<User> userSearch;
@@ -28,19 +31,16 @@ public class ModelRenderer {
         TableOutput output = new PojoReflectorTableOutput(user);
         //Print related entities in summary mode
         //Print organisation. There should only be only one really
-        output.addTableBreak("Organisations where User belongs");
-        organisationSearch.search("_id", String.valueOf(user.getOrganizationId())).forEach(
-                organisation -> output.addRow(organisation.toString(), organisation.getName())
-        );
+        addSummaryItems(output, "Organisations where User belongs",
+                organisationSearch.search("_id", String.valueOf(user.getOrganizationId())),
+                Organisation::getName);
         //Print tickets created by user
-        output.addTableBreak("Tickets submitted by user");
-        ticketSearch.search("submitter_id", String.valueOf(user.getId())).forEach(
-                ticket -> output.addRow(ticket.toString(), ticket.getSubject())
-        );
-        output.addTableBreak("Tickets assigned to the user");
-        ticketSearch.search("assignee_id", String.valueOf(user.getId())).forEach(
-                ticket -> output.addRow(ticket.toString(), ticket.getSubject())
-        );
+        addSummaryItems(output, "Tickets submitted by user",
+                ticketSearch.search("submitter_id", String.valueOf(user.getId())),
+                Ticket::getSubject);
+        addSummaryItems(output, "Tickets assigned to the user",
+                ticketSearch.search("assignee_id", String.valueOf(user.getId())),
+                Ticket::getSubject);
         return output.render();
     }
 
@@ -48,15 +48,13 @@ public class ModelRenderer {
         TableOutput output = new PojoReflectorTableOutput(organisation);
         //Print related entities in summary mode
         //Print users.
-        output.addTableBreak("Users in Organisation");
-        userSearch.search("organization_id", String.valueOf(organisation.getId())).forEach(
-                user -> output.addRow(user.toString(), user.getName())
-        );
+        addSummaryItems(output, "Users in Organisation",
+                userSearch.search("organization_id", String.valueOf(organisation.getId())),
+                User::getName);
         //Print tickets.
-        output.addTableBreak("Tickets in Organisation");
-        ticketSearch.search("organization_id", String.valueOf(organisation.getId())).forEach(
-                ticket -> output.addRow(ticket.toString(), ticket.getSubject())
-        );
+        addSummaryItems(output, "Tickets in Organisation",
+                ticketSearch.search("organization_id", String.valueOf(organisation.getId())),
+                Ticket::getSubject);
         return output.render();
     }
 
@@ -64,19 +62,16 @@ public class ModelRenderer {
         TableOutput output = new PojoReflectorTableOutput(ticket);
         //Print related entities in summary mode
         //Print organisation. There should be only one really
-        output.addTableBreak("Organisation owning this ticket");
-        organisationSearch.search("_id", String.valueOf(ticket.getOrganizationId())).forEach(
-                organisation -> output.addRow(organisation.toString(), organisation.getName())
-        );
+        addSummaryItems(output, "Organisation owning this ticket",
+                organisationSearch.search("_id", String.valueOf(ticket.getOrganizationId())),
+                Organisation::getName);
         //Print user. There should be only one really.
-        output.addTableBreak("Assigned User");
-        userSearch.search("_id", String.valueOf(ticket.getAssigneeId())).forEach(
-                user -> output.addRow(user.toString(), user.getName())
-        );
-        output.addTableBreak("Submitting User");
-        userSearch.search("_id", String.valueOf(ticket.getSubmitterId())).forEach(
-                user -> output.addRow(user.toString(), user.getName())
-        );
+        addSummaryItems(output, "Assigned User",
+                userSearch.search("_id", String.valueOf(ticket.getAssigneeId())),
+                User::getName);
+        addSummaryItems(output, "Submitting User",
+                userSearch.search("_id", String.valueOf(ticket.getSubmitterId())),
+                User::getName);
         return output.render();
     }
 
@@ -91,5 +86,10 @@ public class ModelRenderer {
         return object.toString();
     }
 
+    public <T extends BaseEntity> void addSummaryItems(
+            TableOutput output, String title, List<T> entities, Function<T, String> summaryLineSupplier) {
+        output.addTableBreak(title);
+        entities.forEach(e -> output.addRow(e.toString(), summaryLineSupplier.apply(e)));
+    }
 
 }

@@ -14,7 +14,6 @@ public class Organisation extends BaseEntity<Integer> {
     private String details;
     @SerializedName("shared_tickets")
     private boolean sharedTickets;
-
     private String name;
 
     public List<String> getDomainNames() {

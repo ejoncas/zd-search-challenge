@@ -22,7 +22,7 @@ public class SearchableFieldsCommand extends BaseSearchCommand {
     public String showfields() {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<EntityType, SearchService<? extends BaseEntity>> entry : getSearchServiceMap().entrySet()) {
-            builder.append("Search " + entry.getKey() + " with: " + System.lineSeparator());
+            builder.append("Search " + entry.getKey() + " with:" + System.lineSeparator());
             Set<String> indexedFields = entry.getValue().getIndexedFields();
             for (String field : indexedFields) {
                 builder.append(field + NEW_LINE);

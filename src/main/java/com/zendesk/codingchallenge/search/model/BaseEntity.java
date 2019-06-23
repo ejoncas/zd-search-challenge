@@ -60,8 +60,8 @@ public class BaseEntity<ID> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BaseEntity that = (BaseEntity) o;
-        return id == that.id;
+        BaseEntity<?> that = (BaseEntity<?>) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override

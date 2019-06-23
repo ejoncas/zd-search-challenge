@@ -16,7 +16,11 @@ import java.util.function.BiConsumer;
  * <p>
  * This is useful in cases where your JSON serialization does not match your pojo naming conventions.
  */
-public class PojoJsonIntrospector {
+public final class PojoJsonIntrospectorUtils {
+
+    private PojoJsonIntrospectorUtils() {
+        throw new RuntimeException("No instances allowed");
+    }
 
     public static void doWithSerializedNames(Object obj, BiConsumer<String, Object> consumer) {
         Class<?> clazz = obj.getClass();

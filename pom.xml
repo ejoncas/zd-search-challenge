@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>12</java.version>
-        <coverage.percentage>0.95</coverage.percentage>
+        <coverage.percentage>0.90</coverage.percentage>
     </properties>
 
     <dependencies>
@@ -88,6 +88,16 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.4</version>
+                <configuration>
+                    <excludes>
+                        <!-- Exclude Config classes -->
+                        <exclude>**/*Config.*</exclude>
+                        <!-- Exclude Utility classes as private constructors are tricky to test -->
+                        <exclude>**/*Utils.*</exclude>
+                        <!-- Main class -->
+                        <exclude>**/ZendeskSearchCliApplication.*</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
